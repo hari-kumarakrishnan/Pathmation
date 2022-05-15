@@ -1,0 +1,10 @@
+.rowWrapper {
+    display: flex;
+}
+.wrapper {
+    max-width: 80%;
+    margin: auto;
+}
+.wrapper h1 {
+    margin: auto;
+}
