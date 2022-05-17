@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Node from "./Node";
 import "./Grid.css";
 import BFS from "../algorithms/BFS";
-import { isCompositeComponent } from "react-dom/test-utils";
 
 const cols = 10;
 const rows = 10;
@@ -12,8 +11,6 @@ const end_row = 9;
 const end_col = 9;
 const Grid = () => {
     const [Grid, setGrid] = useState([]);
-    const [VisitedNodes, setVisitedNodes] = useState([]);
-    const[Path, setPath] = useState([]);
     const [EndNode, setEnd] = useState([]);
     const [StartNode, setStart] = useState([]);
     useEffect(() => {
@@ -31,11 +28,8 @@ const Grid = () => {
         setEnd(endNode);
         setStart(startNode);
         setGrid(grid);
-        let vis = BFS(startNode, endNode);
-        setVisitedNodes(vis.VisitedNodes);
-        setPath(vis.path);
-        
     };
+
     const createPoint = (grid) => {
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
@@ -53,10 +47,10 @@ const Grid = () => {
     function Point(i, j) {
         this.x = i;
         this.y = j;
+        this.isWall = false;
         this.isStart = this.x === start_row && this.y === start_col;
         this.isEnd = this.x === end_row && this.y === end_col;
         this.neighbors = [];
-        this.isWall = false;
         this.previous = undefined;
         this.addNeighbors = function(grid)
         {
@@ -90,14 +84,16 @@ const Grid = () => {
             })}
         </div>
     );
-    const visualizePath = () => {
-        for (let i = 0; i <= VisitedNodes.length; i++) {  
+    const visualizePath = (VisitedNodes, Path) => {
+        let vis = BFS(StartNode, EndNode);
+        VisitedNodes = vis.VisitedNodes;
+        Path = vis.path;
+        for (let i = VisitedNodes.length; i >= 0; i--) {  
             const node = VisitedNodes[i];
             if (i === VisitedNodes.length) {
                 setTimeout(() => {
                     visualizeShortestPath(Path);
                 }, 20* i);
-                break;
             }
             else {
                 if (node !== EndNode) {
@@ -109,7 +105,6 @@ const Grid = () => {
         }
     };
     const visualizeShortestPath = (ShortestPathNodes) => {
-        console.log(ShortestPathNodes);
         for (let i = 0; i < ShortestPathNodes.length; i++) {  
             const node = ShortestPathNodes[i];
             if (node !== EndNode && node !== StartNode) {
@@ -120,6 +115,7 @@ const Grid = () => {
         }
     };
     const addObstacles = () => {
+        clearBoard();
         for (let i = 0; i < rows; i++) {
             for (let j =0; j < cols; j++) {
                 if (Math.random(1) < 0.15 ) {
@@ -131,16 +127,21 @@ const Grid = () => {
                 }
             }
         }
-        
+        addNeighbors(Grid);
     };
-    const clearBoard = () => {
-        for (let i = 0; i < VisitedNodes.length; i++) {            
-            const node = VisitedNodes[i];
-            if (node !== StartNode && node !== EndNode) {
-                document.getElementById(`node-${node.x}-${node.y}`).className = "node";
+    function clearBoard() {
+        for (let i = 0; i < rows; i++) {
+            for (let j =0; j < cols; j++) {
+                let node = Grid[i][j];
+                node.isWall=false;
+                if (node !== StartNode && node !== EndNode) {
+                    document.getElementById(`node-${node.x}-${node.y}`).className = "node";
+                }
             }
         }
+        addNeighbors(Grid);
     }
+
     return (
         <div className = "wrapper">
             <div className = "wrapper-buttons">

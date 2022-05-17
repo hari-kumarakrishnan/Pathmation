@@ -4,25 +4,25 @@ function BFS(startNode, endNode) {
     queue.push(startNode);
     let path = [];
     while (queue.length !== 0) {
-    let current = queue.shift();
-    let neighbors = current.neighbors;
+        let current = queue.shift();
+        let neighbors = current.neighbors;
         for (let i = 0; i < neighbors.length; i++) {
             if (current === endNode) {
                 path = tracePath(endNode);
-                console.log(path);
                 return {path, VisitedNodes};
             }
             let neighbor = neighbors[i];
-            if ((!VisitedNodes.includes(neighbor)) && neighbor !== startNode) {
-                neighbor.previous = current;
-                queue.push(neighbor);
-                VisitedNodes.push(neighbor);
+            if (!(VisitedNodes.includes(neighbor)) && neighbor !== startNode) {
+                if (neighbor.isWall === false) {
+                    neighbor.previous = current;
+                    queue.push(neighbor);
+                    VisitedNodes.push(neighbor);
+                }
             }
         }
     }
     return [];
 }
-
 function tracePath(node) {
     let n = node;
     let path = [];
@@ -30,6 +30,10 @@ function tracePath(node) {
         path.push(n);
         n = n.previous;
     }
-    return path;
+    let revPath = [];
+    for (let i = path.length - 1; i >= 0; i--) {
+        revPath.push(path[i]);
+    }
+    return revPath;
 }
 export default BFS;
