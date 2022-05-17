@@ -1,3 +1,4 @@
+//Traverses to every node using BFS
 function BFS(startNode, endNode) {
     let VisitedNodes = [];
     let queue = [];
@@ -21,8 +22,10 @@ function BFS(startNode, endNode) {
             }
         }
     }
+    alert("No path exists between the two nodes")
     return [];
 }
+// Traces shortest path from start to end
 function tracePath(node) {
     let n = node;
     let path = [];

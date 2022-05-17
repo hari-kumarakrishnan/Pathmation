@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import Node from "./Node";
 import "./Grid.css";
 import BFS from "../algorithms/BFS";
-
-const cols = 10;
-const rows = 10;
+import AStar from "../algorithms/AStar";
+import { isClickableInput } from "@testing-library/user-event/dist/utils";
+const cols = 16;
+const rows = 16;
 const start_row = 0;
 const start_col = 0;
-const end_row = 9;
+const end_row = 15;
 const end_col = 9;
 const Grid = () => {
     const [Grid, setGrid] = useState([]);
@@ -52,6 +53,9 @@ const Grid = () => {
         this.isEnd = this.x === end_row && this.y === end_col;
         this.neighbors = [];
         this.previous = undefined;
+        this.f = 0;
+        this.g = 0;
+        this.h = 0;
         this.addNeighbors = function(grid)
         {
             let i = this.x;
@@ -85,10 +89,7 @@ const Grid = () => {
         </div>
     );
     const visualizePath = (VisitedNodes, Path) => {
-        let vis = BFS(StartNode, EndNode);
-        VisitedNodes = vis.VisitedNodes;
-        Path = vis.path;
-        for (let i = VisitedNodes.length; i >= 0; i--) {  
+        for (let i = 0; i <= VisitedNodes.length; i++) {  
             const node = VisitedNodes[i];
             if (i === VisitedNodes.length) {
                 setTimeout(() => {
@@ -141,15 +142,42 @@ const Grid = () => {
         }
         addNeighbors(Grid);
     }
-
+    function visualize()
+    {  
+        let radios = document.getElementById('algs').getElementsByTagName('input');
+        console.log(radios);
+        for (let i of radios) {
+            if (i.value === "A" && i.checked) {
+                let vis = AStar(StartNode, EndNode);
+                let VisitedNodes = vis.VisitedNodes;
+                let Path = vis.path;
+                visualizePath(VisitedNodes, Path);
+                break;
+            }
+            else if (i.value === "BFS" && i.checked) {
+                let vis = BFS(StartNode, EndNode);
+                let VisitedNodes = vis.VisitedNodes;
+                let Path = vis.path;
+                visualizePath(VisitedNodes, Path);
+                break;
+            }
+        }
+    }
     return (
         <div className = "wrapper">
             <div className = "wrapper-buttons">
-                <button onClick={visualizePath}>Visualize</button>
+                <button onClick={visualize}>Visualize</button>
                 <button onClick={addObstacles}>Add Obstacles</button>
                 <button onClick={clearBoard}>Clear</button>
-            </div>            
-            <h1>Path Finder</h1>
+            </div> 
+            <fieldset>
+                <legend>Choose an algorithm!</legend>
+                <div id = "algs">
+                    <input type="radio" id="algorithm" value="A" name="algorithm"/> A*
+                    <input type="radio" id="algorithm" value="BFS" name="algorithm"/> BFS
+                </div>
+            </fieldset>           
+           <h1>Path Finder</h1>
             {nodeGrid}
         </div>
     );
