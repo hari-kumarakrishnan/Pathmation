@@ -22,7 +22,7 @@ function AStar(startNode, endNode) {
             }
             path.shift();
             VisitedNodes.shift();
-            return {path, VisitedNodes};
+            return {path, VisitedNodes}; 
         }
         openList = openList.filter((elt) => elt !== current);
         closedList.push(current);
@@ -60,4 +60,11 @@ function Heuristic(pos0, pos1) {
     var b = Math.abs(pos1.y - pos0.y);
     return a + b;
 }
+// function reverse(path) {
+//     let revPath = [];
+//     for (let i = path.length - 1; i >= 0; i--) {
+//         revPath.push(path[i]);
+//     }
+//     return revPath;
+// }
 export default AStar;

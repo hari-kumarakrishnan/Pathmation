@@ -89,9 +89,10 @@ const Grid = () => {
         </div>
     );
     const visualizePath = (VisitedNodes, Path) => {
-        for (let i = 0; i <= VisitedNodes.length; i++) {  
-            const node = VisitedNodes[i];
-            if (i === VisitedNodes.length) {
+        let i = 0;
+        while (VisitedNodes.length != 0) {  
+            const node = VisitedNodes.shift();
+            if (VisitedNodes.length === 0) {
                 setTimeout(() => {
                     visualizeShortestPath(Path);
                 }, 20* i);
@@ -103,6 +104,7 @@ const Grid = () => {
                     }, 20 * i);
                 }
             }
+            i += 1;
         }
     };
     const visualizeShortestPath = (ShortestPathNodes) => {
@@ -131,15 +133,17 @@ const Grid = () => {
         addNeighbors(Grid);
     };
     function clearBoard() {
-        for (let i = 0; i < rows; i++) {
-            for (let j =0; j < cols; j++) {
-                let node = Grid[i][j];
-                node.isWall=false;
-                if (node !== StartNode && node !== EndNode) {
-                    document.getElementById(`node-${node.x}-${node.y}`).className = "node";
+     //   if (!Status) {
+            for (let i = 0; i < rows; i++) {
+                for (let j =0; j < cols; j++) {
+                    let node = Grid[i][j];
+                    node.isWall=false;
+                    if (node !== StartNode && node !== EndNode) {
+                        document.getElementById(`node-${node.x}-${node.y}`).className = "node";
+                    }
                 }
             }
-        }
+     //   }   
         addNeighbors(Grid);
     }
     function visualize()
