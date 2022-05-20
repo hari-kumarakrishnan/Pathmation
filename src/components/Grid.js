@@ -3,7 +3,7 @@ import Node from "./Node";
 import "./Grid.css";
 import BFS from "../algorithms/BFS";
 import AStar from "../algorithms/AStar";
-import { isClickableInput } from "@testing-library/user-event/dist/utils";
+import DFS from "../algorithms/DFS";
 const cols = 16;
 const rows = 16;
 const start_row = 0;
@@ -146,10 +146,8 @@ const Grid = () => {
      //   }   
         addNeighbors(Grid);
     }
-    function visualize()
-    {  
+    function visualize() {  
         let radios = document.getElementById('algs').getElementsByTagName('input');
-        console.log(radios);
         for (let i of radios) {
             if (i.value === "A" && i.checked) {
                 let vis = AStar(StartNode, EndNode);
@@ -160,6 +158,13 @@ const Grid = () => {
             }
             else if (i.value === "BFS" && i.checked) {
                 let vis = BFS(StartNode, EndNode);
+                let VisitedNodes = vis.VisitedNodes;
+                let Path = vis.path;
+                visualizePath(VisitedNodes, Path);
+                break;
+            }
+            else if (i.value === "DFS" && i.checked) {
+                let vis = DFS(StartNode, EndNode);
                 let VisitedNodes = vis.VisitedNodes;
                 let Path = vis.path;
                 visualizePath(VisitedNodes, Path);
@@ -179,9 +184,15 @@ const Grid = () => {
                 <div id = "algs">
                     <input type="radio" id="algorithm" value="A" name="algorithm"/> A*
                     <input type="radio" id="algorithm" value="BFS" name="algorithm"/> BFS
+                    <input type="radio" id="algorithm" value="DFS" name="algorithm"/> DFS
+
                 </div>
+            </fieldset>
+            <fieldset>
+                <legend>Edit start/end node!</legend>
+                <img src="greensquare.jpg" className="square" width="40" height="40"></img>
             </fieldset>           
-           <h1>Path Finder</h1>
+            <h1>Path Finder</h1>
             {nodeGrid}
         </div>
     );
